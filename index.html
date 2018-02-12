@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Follow Button Animation</title>
+    <style media="screen">
+      * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      *:before,
+      *:after {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #f8f8f8;
+        font-family: Calibri, sans-serif;
+      }
+
+      h1 {
+        color: #3C3C3C;
+      }
+
+      #container {
+        width: 960px;
+        margin: auto;
+        margin-top: 40px;
+      }
+
+      #follow_button {
+        width: 904px;
+        height: 308px;
+        background-color: #225ED7;
+        border-radius: 8px;
+        margin-top: 30px;
+        line-height: 308px;
+        text-align: center;
+        font-size: 180px;
+        color: white;
+        cursor: pointer;
+        box-shadow: 5px 10px #888888;
+      }
+
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="greensock/TimelineMax.min.js"></script> -->
+    <script type="text/javascript" src="greensock/TweenMax.min.js"></script>
+    <script type="text/javascript" src="greensock/TweenLite.min.js"></script>
+  </head>
+  <body>
+      <div id="container">
+        <h1>The Follow Button</h1>
+        <div id="follow_button">follow</div>
+      </div>
+
+      <script type="text/javascript" src="bodymovin.js"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $("#follow_button").mousedown(function(){
+            $("#follow_button").css("box-shadow", "0px 2px #888888")
+          })
+          $("#follow_button").mouseup(function(){
+            $("#follow_button").css("box-shadow", "5px 10px #888888")
+          })
+          $("#follow_button").mouseenter(function(){
+            $("#follow_button").css("opacity", "0.9")
+          })
+          $("#follow_button").mouseleave(function(){
+            $("#follow_button").css("opacity", "1")
+          })
+          $("#follow_button").click(function(){
+            if($("#follow_button").text() == "follow") {
+              $("#follow_button").html("");
+              animate(false);
+            }
+            else if($("#follow_button").text() == "unfollow") {
+              $("#follow_button").html("");
+              animate(true);
+            }
+          });
+          function animate(isReverse){
+            if(!isReverse) {
+              var startFrame = 0;
+              var endFrame =  38;
+              var textChange = "unfollow";
+              var colorChange = "#E63D3D";
+            }
+            else {
+              var startFrame = 38;
+              var endFrame =  0;
+              var textChange = "follow";
+              var colorChange = "#225ED7";
+            }
+            var animation = bodymovin.loadAnimation({
+              container: document.getElementById('follow_button'),
+              renderer: 'svg',
+              loop: false,
+              autoplay: true,
+              path: 'data.json'
+            })
+            var tl = new TimelineMax();
+            tl.to({frame:startFrame}, 1.5, {
+              frame: endFrame,
+              onStart: function(){
+                console.log(animation.totalFrames-1);
+              },
+              onUpdate: function(){
+                animation.goToAndStop(Math.round(this.target.frame), true)
+              },
+              onComplete: function(){
+                $("#follow_button").html(textChange);
+                TweenLite.from($("#follow_button"), 1, {opacity:0.7, ease:Power4.easeOut});
+                $("#follow_button").css("background-color", colorChange);
+              }
+            })
+          }
+        })
+      </script>
+  </body>
+</html>
