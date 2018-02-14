@@ -36,12 +36,16 @@
         background-color: #225ED7;
         border-radius: 8px;
         margin-top: 30px;
-        line-height: 308px;
-        text-align: center;
-        font-size: 180px;
-        color: white;
         cursor: pointer;
         box-shadow: 5px 10px #888888;
+      }
+
+      #follow_button_txt{
+        position: relative;
+        text-align: center;
+        line-height: 308px;
+        font-size: 180px;
+        color: white;
       }
 
     </style>
@@ -53,12 +57,13 @@
   <body>
       <div id="container">
         <h1>The Follow Button</h1>
-        <div id="follow_button">follow</div>
+        <div id="follow_button"><div id="follow_button_txt">follow</div></div>
       </div>
 
       <script type="text/javascript" src="bodymovin.js"></script>
       <script type="text/javascript">
         $(document).ready(function(){
+          // TweenLite.to($("#follow_button"), 1, {left:"500px", ease:Power4.easeOut});
           $("#follow_button").mousedown(function(){
             $("#follow_button").css("box-shadow", "0px 2px #888888")
           })
@@ -72,50 +77,81 @@
             $("#follow_button").css("opacity", "1")
           })
           $("#follow_button").click(function(){
-            if($("#follow_button").text() == "follow") {
-              $("#follow_button").html("");
+            if($("#follow_button_txt").text() == "follow") {
+              $("#follow_button_txt").html("");
               animate(false);
             }
-            else if($("#follow_button").text() == "unfollow") {
-              $("#follow_button").html("");
+            else if($("#follow_button_txt").text() == "unfollow") {
+              $("#follow_button_txt").html("");
               animate(true);
             }
           });
           function animate(isReverse){
+            console.log("in animate function");
             if(!isReverse) {
               var startFrame = 0;
               var endFrame =  38;
               var textChange = "unfollow";
               var colorChange = "#E63D3D";
+              var animation_time = 1.5;
+              var animation_ease = "Power1.easeInOut";
             }
             else {
               var startFrame = 38;
               var endFrame =  0;
               var textChange = "follow";
               var colorChange = "#225ED7";
+              var animation_time = 1.5;
+              var animation_ease = "Sine.easeInOut";
+              $("#follow_button").css("background-color", colorChange);
             }
             var animation = bodymovin.loadAnimation({
-              container: document.getElementById('follow_button'),
+              container: document.getElementById('follow_button_txt'),
               renderer: 'svg',
               loop: false,
               autoplay: true,
               path: 'data.json'
             })
             var tl = new TimelineMax();
-            tl.to({frame:startFrame}, 1.5, {
+            tl.to({frame:startFrame}, animation_time, {
               frame: endFrame,
+              ease: animation_ease,
               onStart: function(){
-                console.log(animation.totalFrames-1);
+                console.log("animation: ", animation.totalFrames-1);
               },
               onUpdate: function(){
-                animation.goToAndStop(Math.round(this.target.frame), true)
+                animation.goToAndStop(Math.round(this.target.frame), true);
               },
               onComplete: function(){
-                $("#follow_button").html(textChange);
-                TweenLite.from($("#follow_button"), 1, {opacity:0.7, ease:Power4.easeOut});
+                $("#follow_button_txt").html(textChange);
+                TweenLite.from($("#follow_button_txt"), 2, {opacity:0.5, ease:Power4.easeOut});
+                if(!isReverse){
+                  TweenLite.from($("#follow_button_txt"), 1, {"left":"-100px", ease:Power4.easeOut});
+                }
                 $("#follow_button").css("background-color", colorChange);
               }
             })
+
+            // var bg_animation = bodymovin.loadAnimation({
+            //   container: document.getElementById('follow_button_txt'),
+            //   renderer: 'svg',
+            //   loop: false,
+            //   autoplay: true,
+            //   path: 'data_bg.json'
+            // })
+            // var tlbg = new TimelineMax();
+            // tlbg.to({frame:startFrame}, 1.5, {
+            //   frame: endFrame,
+            //   onStart: function(){
+            //     console.log("bg_animation: ", bg_animation.totalFrames);
+            //   },
+            //   onUpdate: function(){
+            //     bg_animation.goToAndStop(Math.round(this.target.frame), true);
+            //   },
+            //   onComplete: function(){
+            //     console.log("animation complete");
+            //   }
+            // })
           }
         })
       </script>
